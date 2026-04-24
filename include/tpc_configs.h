@@ -14,44 +14,89 @@ using namespace constants::tpc_readout;
 class TpcConfigs : public MetricBase {
 private:
 
-    /*
-    * Note: We only use the Cosmic multiplicity and summed amplitude.
-    *       This is the case since the other types require additional
-    *       conditions such as a beam gate.
-    */
-
     // Configuration parameters ot be set from the ground
-    uint32_t config_file_number_;    // the on-Sabertooth config file to be loaded
-    uint32_t summed_peak_thresh_;    // Summed peak ampltitudes of 5 adjacent channels
-    uint32_t channel_multiplicity_;  // Number of 5 adjacent channels above Disc 1 threshold
-    uint32_t roi_delay_0_;           // Number of samples to shift the waveforms to perform the subtraction
-    uint32_t roi_delay_1_;           // ?
-    uint32_t roi_precount_;          // number of samples before disc. 0 threshold to include in the ROI
-    uint32_t roi_peak_window_;       // pmt_width, window where the waveform peak is found
-    uint32_t enable_top_ = 0x0;            // Enable mask for channels on top connector
-    uint32_t enable_middle_ = 0x0;         // Enable mask for channels on middle connector
-    uint32_t enable_bottom_ = 0xFFFF;      // Enable mask for channels on bottom connector
-    uint32_t num_roi_words_ = 30;    // Number of samples in the ROI
-    uint32_t roi_deadtime_ = 240;    // The number of samples after the ROI which are an enforced deadtime
-    uint32_t fifo_blocksize_ = 0xFFFF; // not sure if this will be configurable during flight
 
-    // Drift size
+    // the on-Sabertooth config file to be loaded
+    uint32_t config_file_number_;
+
+    /************************************
+     *  Light Trigger & ROI settings
+    **************************************/
+
+    // cosmic_summed_adc_thresh: Summed peak ampltitudes of 5 adjacent channels
+    uint32_t summed_peak_thresh_;
+    // cosmic_multiplicity: Number of 5 adjacent channels above Disc 1 threshold
+    uint32_t channel_multiplicity_;
+    // pmt_delay_0: Number of samples to shift the waveforms to perform the subtraction
+    uint32_t roi_delay_0_;
+    // pmt_delay_1: ?
+    uint32_t roi_delay_1_;
+    // pmt_precount: number of samples before disc. 0 threshold to include in the ROI
+    uint32_t roi_precount_;
+    // pmt_width: window where the waveform peak is found
+    uint32_t roi_peak_window_;
+    // sipm_words: Number of samples in the ROI
+    uint32_t num_roi_words_;
+    // sipm_deadtime: The number of samples after the ROI which are an enforced deadtime
+    uint32_t roi_deadtime_;
+    // pmt_blocksize: curerntly no known reason to change this so keep set to 0xFFFF
+    uint32_t fifo_blocksize_ = 0xFFFF;
+    // Both "pmt_gate_size" and  "pmt_beam_size" get set with this value
+    //  The width (in 64MHz ticks) for the unbiased light readout
+    uint32_t unbiased_light_samples_;
+
+    /************************************
+     *  Light Channel Enable/Disable
+    **************************************/
+
+    // pmt_enable_top: Enable mask for channels on top connector
+    uint32_t enable_top_;
+    // pmt_enable_middle: Enable mask for channels on middle connector
+    uint32_t enable_middle_;
+    // pmt_enable_bottom: Enable mask for channels on bottom connector
+    uint32_t enable_bottom_;
+
+    /************************************
+    *  TPC Drift Window
+    **************************************/
+
+    // drift_size: TPC drift number of samples, should be set to correspond to the time it
+    // takes electrons to drift from cathode to anode.
     uint32_t drift_size_;
 
-    // Trigger parameters
+    /************************************
+     *  Trigger parameters
+    **************************************/
+
+    // trigger_source: What triggers the system (software, light, external)
     uint32_t trigger_source_;
+    // software_trigger_rate_hz: Only used when the software trigger is selected as the source, sets the trigger rate in Hz
     uint32_t software_trigger_rate_hz_;
+    // dead_time: Dead time after a trigger until another trigger is accepted. In 32us increments
     uint32_t tpc_dead_time_;
+    // light_trig_prescale: There are number of prescales for various trigger sources used in previous applications e.g. uBoonNE
+    // We only care about prescaling the light trigger so use a seperate config parameter for convenience.
     uint32_t light_trig_prescale_;
+    // prescale: The rest of the prescales, not planning to use for pGRAMS.
     std::array<uint32_t, NUM_PRESCALES> prescale_;
 
-    // Discriminator thresholds
-    std::array<uint32_t, NUM_LIGHT_CHANNELS> disc_threshold_0_; // Discriminator threshold 0 for the arming disc.
-    std::array<uint32_t, NUM_LIGHT_CHANNELS> disc_threshold_1_; // Discriminator threshold 1 to decide when to save the ROI
+    /************************************
+     *  Discriminator thresholds
+    **************************************/
 
-    // Won't use these
-    uint32_t unbiased_light_samples_; //  these set the width (in 64MHz ticks) for the unbiased light readout
-    uint32_t spare_; // 
+    // channel_thresh0: SiPM discriminator threshold 0, when crossed it arms the system for discriminator 1
+    std::array<uint32_t, NUM_LIGHT_CHANNELS> disc_threshold_0_;
+    // channel_thresh1: SiPM discriminator threshold 1, when threshold is crossed the ROI is saved to the FIFO
+    std::array<uint32_t, NUM_LIGHT_CHANNELS> disc_threshold_1_;
+
+
+    /************************************
+     *  Unused, set to these default values
+    **************************************/
+
+    // These are parameters used for beam and Michel triggers, both which are not used
+
+    uint32_t spare_; // just an extra one
     uint32_t beam_multiplicity_ = 100; // : 100,
     uint32_t beam_summed_adc_thresh_ = 500; // : 500,
     uint32_t michel_multiplicity_ = 100; // : 100,
