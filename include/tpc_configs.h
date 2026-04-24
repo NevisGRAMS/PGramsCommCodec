@@ -21,6 +21,7 @@ private:
     */
 
     // Configuration parameters ot be set from the ground
+    uint32_t config_file_number_;    // the on-Sabertooth config file to be loaded
     uint32_t summed_peak_thresh_;    // Summed peak ampltitudes of 5 adjacent channels
     uint32_t channel_multiplicity_;  // Number of 5 adjacent channels above Disc 1 threshold
     uint32_t roi_delay_0_;           // Number of samples to shift the waveforms to perform the subtraction
@@ -49,8 +50,8 @@ private:
     std::array<uint32_t, NUM_LIGHT_CHANNELS> disc_threshold_1_; // Discriminator threshold 1 to decide when to save the ROI
 
     // Won't use these
-    uint32_t pmt_gate_size_ = 750; // : 750,
-    uint32_t pmt_beam_size_ = 202; // : 202,
+    uint32_t unbiased_light_samples_; //  these set the width (in 64MHz ticks) for the unbiased light readout
+    uint32_t spare_; // 
     uint32_t beam_multiplicity_ = 100; // : 100,
     uint32_t beam_summed_adc_thresh_ = 500; // : 500,
     uint32_t michel_multiplicity_ = 100; // : 100,
@@ -59,22 +60,24 @@ private:
     std::array<uint32_t, NUM_LIGHT_CHANNELS> disc_threshold_4_;
 
     // // Implement  the serialize/deserialize
-    size_t num_members_ = 15;
+    size_t num_members_ = 20;
 
     auto member_tuple() {
-        return std::tie(summed_peak_thresh_, channel_multiplicity_,
+        return std::tie(config_file_number_, summed_peak_thresh_, channel_multiplicity_,
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
         roi_deadtime_, fifo_blocksize_, drift_size_, trigger_source_,
-        software_trigger_rate_hz_,tpc_dead_time_, light_trig_prescale_);
+        software_trigger_rate_hz_,tpc_dead_time_, light_trig_prescale_,
+        unbiased_light_samples_, spare_);
     };
 
     auto member_tuple() const {
-        return std::tie(summed_peak_thresh_, channel_multiplicity_,
+        return std::tie(config_file_number_, summed_peak_thresh_, channel_multiplicity_,
         roi_delay_0_, roi_delay_1_, roi_precount_, roi_peak_window_,
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
         roi_deadtime_, fifo_blocksize_, drift_size_, trigger_source_,
-        software_trigger_rate_hz_, tpc_dead_time_, light_trig_prescale_);
+        software_trigger_rate_hz_, tpc_dead_time_, light_trig_prescale_,
+        unbiased_light_samples_, spare_);
     };
 
 public:
@@ -153,6 +156,9 @@ public:
     // ===== Getters & Setters =====
 
     // Scalars
+    uint32_t getConfigFileNumber() const { return config_file_number_; }
+    void setConfigFileNumber(uint32_t v) { config_file_number_ = v; }
+
     uint32_t getSummedPeakThresh() const { return summed_peak_thresh_; }
     void setSummedPeakThresh(uint32_t v) { summed_peak_thresh_ = v; }
 
@@ -186,12 +192,6 @@ public:
     uint32_t getRoiDeadtime() const { return roi_deadtime_; }
     void setRoiDeadtime(uint32_t v) { roi_deadtime_ = v; }
 
-    uint32_t getPmtGateSize() const { return pmt_gate_size_; }
-    void setPmtGateSize(uint32_t v) { pmt_gate_size_ = v; }
-
-    uint32_t getPmtBeamSize() const { return pmt_beam_size_; }
-    void setPmtBeamSize(uint32_t v) { pmt_beam_size_ = v; }
-
     uint32_t getFifoBlocksize() const { return fifo_blocksize_; }
     void setFifoBlocksize(uint32_t v) { fifo_blocksize_ = v; }
 
@@ -209,6 +209,12 @@ public:
 
     uint32_t getLightTrigPrescale() const { return light_trig_prescale_; }
     void setLightTrigPrescale(uint32_t v) { light_trig_prescale_ = v; }
+   
+    uint32_t getUnbiasedLightSamples() const { return unbiased_light_samples_; }   
+    void setUnbiasedLightSamples(uint32_t v) { unbiased_light_samples_ = v; }
+
+    uint32_t getSpare() const { return spare_; }   
+    void setSpare(uint32_t v) { spare_ = v; }
 
     // prescale
     const std::array<uint32_t, NUM_PRESCALES>& getPrescale() const { return prescale_; }

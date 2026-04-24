@@ -8,7 +8,8 @@
 #include <algorithm> // for std::fill, std::copy
 
 TpcConfigs::TpcConfigs()
-    : summed_peak_thresh_(0),
+    : config_file_number_(0),
+      summed_peak_thresh_(0),
       channel_multiplicity_(0),
       roi_delay_0_(0),
       roi_delay_1_(0),
@@ -25,8 +26,8 @@ TpcConfigs::TpcConfigs()
       software_trigger_rate_hz_(50),
       tpc_dead_time_(0x10),
       light_trig_prescale_(0),
-      pmt_gate_size_(750),
-      pmt_beam_size_(200) {
+      unbiased_light_samples_(0), 
+      spare_(0) {
     // Fill the arrays with default values
     std::fill(prescale_.begin(), prescale_.end(), 0);
     std::fill(disc_threshold_0_.begin(), disc_threshold_0_.end(), 100);
@@ -54,14 +55,14 @@ void TpcConfigs::clear() {
     software_trigger_rate_hz_ = 50;
     tpc_dead_time_ = 0x10;
     light_trig_prescale_ = 0;
+    unbiased_light_samples_ = 0;
+    spare_ = 0;
     std::fill(prescale_.begin(), prescale_.end(), 0);
     std::fill(disc_threshold_0_.begin(), disc_threshold_0_.end(), 0);
     std::fill(disc_threshold_1_.begin(), disc_threshold_1_.end(), 0);
 
     std::fill(disc_threshold_3_.begin(), disc_threshold_3_.end(), 0xFFF);
     std::fill(disc_threshold_4_.begin(), disc_threshold_4_.end(), 0xFFF);
-    pmt_gate_size_ = 0;
-    pmt_beam_size_ = 0;
 
 }
 
@@ -115,6 +116,7 @@ std::vector<uint32_t>::const_iterator TpcConfigs::deserialize(std::vector<uint32
 py::dict TpcConfigs::getMetricDict() {
     py::dict metric_dict;
 
+    metric_dict["config_file_number"] = config_file_number_;
     metric_dict["summed_peak_thresh"] = summed_peak_thresh_;
     metric_dict["channel_multiplicity"] = channel_multiplicity_;
     metric_dict["roi_delay_0"] = roi_delay_0_;
@@ -132,6 +134,8 @@ py::dict TpcConfigs::getMetricDict() {
     metric_dict["software_trigger_rate_hz"] = software_trigger_rate_hz_;
     metric_dict["tpc_dead_time"] = tpc_dead_time_;
     metric_dict["light_trig_prescale"] = light_trig_prescale_;
+    metric_dict["unbiased_light_samples"] = unbiased_light_samples_;
+    metric_dict["spare"] = spare_;
 
     metric_dict["prescale"] = array_to_numpy_array_1d(prescale_);
     metric_dict["disc_threshold_0"] = array_to_numpy_array_1d(disc_threshold_0_);
@@ -142,6 +146,7 @@ py::dict TpcConfigs::getMetricDict() {
 
 void TpcConfigs::setMetricDict(py::dict &config) {
 
+    AssignScalar(config_file_number_, config, "config_file_number");
     AssignScalar(summed_peak_thresh_, config, "summed_peak_thresh");
     AssignScalar(channel_multiplicity_, config, "channel_multiplicity");
     AssignScalar(roi_delay_0_, config, "roi_delay_0");
@@ -159,6 +164,8 @@ void TpcConfigs::setMetricDict(py::dict &config) {
     AssignScalar(software_trigger_rate_hz_, config, "software_trigger_rate_hz");
     AssignScalar(tpc_dead_time_, config, "tpc_dead_time");
     AssignScalar(light_trig_prescale_, config, "light_trig_prescale");
+    AssignScalar(unbiased_light_samples_, config, "unbiased_light_samples");
+    AssignScalar(spare_, config, "spare");
 
     AssignArray(prescale_, config, "prescale");
     AssignArray(disc_threshold_0_, config, "disc_threshold_0");
@@ -169,6 +176,7 @@ void TpcConfigs::setMetricDict(py::dict &config) {
 
 void TpcConfigs::print() const {
     std::cout << "++++++++++++ TpcConfigs +++++++++++++" << std::endl;
+    std::cout << "  config_file_number: " << config_file_number_ << std::endl;
     std::cout << "  summed_peak_thresh: " << summed_peak_thresh_ << std::endl;
     std::cout << "  channel_multiplicity: " << channel_multiplicity_ << std::endl;
     std::cout << "  roi_delay_0: " << roi_delay_0_ << std::endl;
@@ -185,7 +193,8 @@ void TpcConfigs::print() const {
     std::cout << "  trigger_source: " << trigger_source_ << std::endl;
     std::cout << "  software_trigger_rate_hz: " << software_trigger_rate_hz_ << std::endl;
     std::cout << "  tpc_dead_time: " << tpc_dead_time_ << std::endl;
-    std::cout << "  light_trig_prescale: " << light_trig_prescale_ << std::endl;
+    std::cout << "  unbiased_light_samples: " << unbiased_light_samples_ << std::endl;
+    std::cout << "  spare: " << spare_ << std::endl;
 
     auto print_vector = [&](const std::string& name, const auto& arr) {
         std::cout << "  " << name << " (first 10): ";
