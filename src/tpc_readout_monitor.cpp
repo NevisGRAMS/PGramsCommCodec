@@ -12,7 +12,7 @@ TpcReadoutMonitor::TpcReadoutMonitor() : error_bit_word_(0), num_rw_buffer_overf
     num_events_lower_(0), num_dma_loops_upper_(0),
     num_dma_loops_lower_(0), received_mbytes_upper_(0), received_mbytes_lower_(0), avg_event_size_upper_(0),
     avg_event_size_lower_(0), num_files_upper_(0), num_files_lower_(0), num_event_start_marker_upper_(0),
-    num_event_start_marker_lower_(0), num_event_end_marker_upper_(0), num_event_end_marker_lower_(0) {
+    num_event_start_marker_lower_(0), num_event_end_marker_upper_(0), num_event_end_marker_lower_(0), pps_count_(0) {
     std::fill(board_status_.begin(), board_status_.end(), 0);
 }
 
@@ -39,6 +39,7 @@ void TpcReadoutMonitor::clear() {
     num_event_start_marker_lower_ = 0;
     num_event_end_marker_upper_ = 0;
     num_event_end_marker_lower_ = 0;
+    pps_count_ = 0;
     std::fill(board_status_.begin(), board_status_.end(), 0);
 }
 
@@ -93,6 +94,7 @@ py::dict TpcReadoutMonitor::getMetricDict() {
     metric_dict["num_files"] = getFullWord(num_files_upper_, num_files_lower_);
     metric_dict["num_start_markers"] = getFullWord(num_event_start_marker_upper_, num_event_start_marker_lower_);
     metric_dict["num_end_markers"] = getFullWord(num_event_end_marker_upper_, num_event_end_marker_lower_);
+    metric_dict["pps_count"] = pps_count_;
     metric_dict["board_status"] = array_to_numpy_array_1d(board_status_);
 
     return metric_dict;
@@ -115,6 +117,7 @@ void TpcReadoutMonitor::print() const {
     std::cout << "  num_files: " << getFullWord(num_files_upper_, num_files_lower_) << std::endl;
     std::cout << "  num_start_markers: " << getFullWord(num_event_start_marker_upper_, num_event_start_marker_lower_) << std::endl;
     std::cout << "  num_end_markers: " << getFullWord(num_event_end_marker_upper_, num_event_end_marker_lower_) << std::endl;
+    std::cout << "  pps_count: " << pps_count_ << std::endl;
     std::cout << "  Board Status: " << std::hex;
     for (size_t i = 0; i < board_status_.size(); ++i) {
         std::cout << board_status_[i] << (i == board_status_.size() - 1 ? "" : ", ");

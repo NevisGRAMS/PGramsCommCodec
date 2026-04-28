@@ -42,6 +42,8 @@ private:
     uint32_t num_event_end_marker_upper_;
     uint32_t num_event_end_marker_lower_;
 
+    uint32_t pps_count_;
+
     std::array<uint32_t, NUM_BOARDS> board_status_;
 
     enum class State : int {
@@ -52,14 +54,14 @@ private:
       };
 
     // Implement  the serialize/deserialize
-    size_t num_members_ = 20;
+    size_t num_members_ = 21;
     auto member_tuple() {
         return std::tie(error_bit_word_, num_rw_buffer_overflow_, readout_state_, last_command_, last_command_status_,
                       run_number_, num_events_upper_, num_events_lower_,
                       num_dma_loops_upper_, num_dma_loops_lower_, received_mbytes_upper_,
                       received_mbytes_lower_, avg_event_size_upper_, avg_event_size_lower_, num_files_upper_,
                       num_files_lower_, num_event_start_marker_upper_, num_event_start_marker_lower_,
-                      num_event_end_marker_upper_, num_event_end_marker_lower_);
+                      num_event_end_marker_upper_, num_event_end_marker_lower_, pps_count_);
     };
     auto member_tuple() const {
         return std::tie(error_bit_word_, num_rw_buffer_overflow_, readout_state_, last_command_, last_command_status_,
@@ -67,7 +69,7 @@ private:
                         num_dma_loops_upper_, num_dma_loops_lower_, received_mbytes_upper_,
                         received_mbytes_lower_, avg_event_size_upper_, avg_event_size_lower_, num_files_upper_,
                         num_files_lower_, num_event_start_marker_upper_, num_event_start_marker_lower_,
-                        num_event_end_marker_upper_, num_event_end_marker_lower_);
+                        num_event_end_marker_upper_, num_event_end_marker_lower_, pps_count_);
     };
 
     static inline uint32_t getUpper32(size_t word) { return (word >> 32) & UINT32_MAX; }
@@ -140,7 +142,8 @@ public:
          num_event_end_marker_upper_ = getUpper32(end_marker);
          num_event_end_marker_lower_ = getLower32(end_marker);
      }
-     void setBoardStatus(std::vector<uint32_t> &board_status) {
+    void setPpsCount(uint32_t pps_count) { pps_count_ = pps_count; }
+    void setBoardStatus(std::vector<uint32_t> &board_status) {
          for (size_t i = 0; i < board_status.size(); i++) {
              board_status_.at(i) = board_status.at(i);
          }
@@ -160,6 +163,7 @@ public:
     size_t getNumFiles() const { return getFullWord(num_files_upper_, num_files_lower_); }
     size_t getNumStartMarkers() const { return getFullWord(num_event_start_marker_upper_, num_event_start_marker_lower_); }
     size_t getNumEndMarkers() const { return getFullWord(num_event_end_marker_upper_, num_event_end_marker_lower_); }
+    uint32_t getPpsCount() const { return pps_count_; }
     const std::array<uint32_t, NUM_BOARDS> getBoardStatus() const { return board_status_; }
 
     // MetricBase interface implementation
