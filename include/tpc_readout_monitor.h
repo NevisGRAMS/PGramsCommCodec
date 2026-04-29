@@ -94,12 +94,25 @@ public:
         chargefem_get_config = 10,
         trigger_get_config = 11,
         datahandler_get_config = 12,
-        acquire_pcie_dma_buff = 13
+        acquire_pcie_dma_buff = 13,
+
+        dma_timeout = 14,
+        free_dma_buffer_error = 15,
+        switch_file_close_error = 16,
+        switch_file_open_error = 17,
+        send_pulse_train_error = 18,
+        failed_write = 19,
+        failed_locking_dma_buffers = 20,
+        trigger_file_open_error = 21,
+        pps_file_open_error = 22
     };
 
     void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
     void setErrorBitWord(uint32_t error_bit, bool unset=false) { setBitWord(error_bit_word_, error_bit, unset); }
     uint32_t getErrorBit(uint32_t err_bit) const { return getBit(error_bit_word_, err_bit); }
+    // void updateErrorBitWord(uint32_t error_bitword) {
+    //     for (size_t b = 0; b < 32; b++) { error_bitword}
+    // }
 
     void clear();
     void print() const;
