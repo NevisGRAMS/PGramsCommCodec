@@ -109,11 +109,12 @@ public:
 
     void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
     void setErrorBitWord(uint32_t error_bit, bool unset=false) { setBitWord(error_bit_word_, error_bit, unset); }
-    uint32_t getErrorBit(uint32_t err_bit) const { return getBit(error_bit_word_, err_bit); }
     void updateErrorBitWord(ErrorBits error_bit, uint32_t error_bitword) {
         bool unset = !(error_bitword >> to_underlying(error_bit)) & 0x1;
         setBitWord(error_bit_word_, to_underlying(error_bit), unset);
     }
+    void clearErrorBitWord() { error_bit_word_ = 0; }
+    uint32_t getErrorBit(uint32_t err_bit) const { return getBit(error_bit_word_, err_bit); }
 
     void clear();
     void print() const;

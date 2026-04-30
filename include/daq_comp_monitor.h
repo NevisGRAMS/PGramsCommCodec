@@ -82,6 +82,7 @@ public:
     // Set Error or DAQ process bit words
     void setDaqBitWord(DaqRunningBits daq_bit, bool unset=false) { setBitWord(daq_bit_word_, to_underlying(daq_bit), unset); }
     void setErrorBitWord(ErrorBits error_bit, bool unset=false) { setBitWord(error_bit_word_, to_underlying(error_bit), unset); }
+    void clearErrorBitWord() { error_bit_word_ = 0; }
 
     // --- Getter Methods ---
     // Public setters for populating data
