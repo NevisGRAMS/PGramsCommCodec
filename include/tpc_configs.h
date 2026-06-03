@@ -96,7 +96,7 @@ private:
 
     // These are parameters used for beam and Michel triggers, both which are not used
 
-    uint32_t spare_; // just an extra one
+    uint32_t dma_buffer_kB_; // just an extra one
     uint32_t beam_multiplicity_ = 100; // : 100,
     uint32_t beam_summed_adc_thresh_ = 500; // : 500,
     uint32_t michel_multiplicity_ = 100; // : 100,
@@ -113,7 +113,7 @@ private:
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
         roi_deadtime_, fifo_blocksize_, drift_size_, trigger_source_,
         software_trigger_rate_hz_,tpc_dead_time_, light_trig_prescale_,
-        unbiased_light_samples_, spare_);
+        unbiased_light_samples_, dma_buffer_kB_);
     };
 
     auto member_tuple() const {
@@ -122,7 +122,7 @@ private:
         enable_top_, enable_middle_, enable_bottom_, num_roi_words_,
         roi_deadtime_, fifo_blocksize_, drift_size_, trigger_source_,
         software_trigger_rate_hz_, tpc_dead_time_, light_trig_prescale_,
-        unbiased_light_samples_, spare_);
+        unbiased_light_samples_, dma_buffer_kB_);
     };
 
 public:
@@ -258,8 +258,8 @@ public:
     uint32_t getUnbiasedLightSamples() const { return unbiased_light_samples_; }   
     void setUnbiasedLightSamples(uint32_t v) { unbiased_light_samples_ = v; }
 
-    uint32_t getSpare() const { return spare_; }   
-    void setSpare(uint32_t v) { spare_ = v; }
+    uint32_t getDmaBufferkB() const { return dma_buffer_kB_; }   
+    void setDmaBufferkB(uint32_t v) { dma_buffer_kB_ = v; }
 
     // prescale
     const std::array<uint32_t, NUM_PRESCALES>& getPrescale() const { return prescale_; }

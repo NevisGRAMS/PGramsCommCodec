@@ -27,7 +27,7 @@ TpcConfigs::TpcConfigs()
       tpc_dead_time_(0x10),
       light_trig_prescale_(0),
       unbiased_light_samples_(0), 
-      spare_(0) {
+      dma_buffer_kB_(0) {
     // Fill the arrays with default values
     std::fill(prescale_.begin(), prescale_.end(), 0);
     std::fill(disc_threshold_0_.begin(), disc_threshold_0_.end(), 100);
@@ -56,7 +56,7 @@ void TpcConfigs::clear() {
     tpc_dead_time_ = 0x10;
     light_trig_prescale_ = 0;
     unbiased_light_samples_ = 0;
-    spare_ = 0;
+    dma_buffer_kB_ = 0;
     std::fill(prescale_.begin(), prescale_.end(), 0);
     std::fill(disc_threshold_0_.begin(), disc_threshold_0_.end(), 0);
     std::fill(disc_threshold_1_.begin(), disc_threshold_1_.end(), 0);
@@ -135,7 +135,7 @@ py::dict TpcConfigs::getMetricDict() {
     metric_dict["tpc_dead_time"] = tpc_dead_time_;
     metric_dict["light_trig_prescale"] = light_trig_prescale_;
     metric_dict["unbiased_light_samples"] = unbiased_light_samples_;
-    metric_dict["spare"] = spare_;
+    metric_dict["dma_buffer_kB"] = dma_buffer_kB_;
 
     metric_dict["prescale"] = array_to_numpy_array_1d(prescale_);
     metric_dict["disc_threshold_0"] = array_to_numpy_array_1d(disc_threshold_0_);
@@ -165,7 +165,7 @@ void TpcConfigs::setMetricDict(py::dict &config) {
     AssignScalar(tpc_dead_time_, config, "tpc_dead_time");
     AssignScalar(light_trig_prescale_, config, "light_trig_prescale");
     AssignScalar(unbiased_light_samples_, config, "unbiased_light_samples");
-    AssignScalar(spare_, config, "spare");
+    AssignScalar(dma_buffer_kB_, config, "dma_buffer_kB");
 
     AssignArray(prescale_, config, "prescale");
     AssignArray(disc_threshold_0_, config, "disc_threshold_0");
@@ -194,7 +194,7 @@ void TpcConfigs::print() const {
     std::cout << "  software_trigger_rate_hz: " << software_trigger_rate_hz_ << std::endl;
     std::cout << "  tpc_dead_time: " << tpc_dead_time_ << std::endl;
     std::cout << "  unbiased_light_samples: " << unbiased_light_samples_ << std::endl;
-    std::cout << "  spare: " << spare_ << std::endl;
+    std::cout << "  dma_buffer_kB: " << dma_buffer_kB_ << std::endl;
 
     auto print_vector = [&](const std::string& name, const auto& arr) {
         std::cout << "  " << name << " (first 10): ";
