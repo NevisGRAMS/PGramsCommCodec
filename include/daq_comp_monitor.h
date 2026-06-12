@@ -15,8 +15,10 @@ private:
     uint32_t last_command_;
     uint32_t last_command_status_;
     uint32_t daq_bit_word_;
-    uint32_t tpc_disk_;
-    uint32_t tof_disk_;
+    uint32_t tpc_disk_0_;
+    uint32_t tof_disk_0_;
+    uint32_t tpc_disk_1_;
+    uint32_t tof_disk_1_;
     uint32_t sys_disk_;
     uint32_t cpu_usage_;
     uint32_t memory_usage_;
@@ -24,14 +26,14 @@ private:
     std::array<uint32_t, NUM_CPUS> cpu_temp_;
 
     // Implement  the serialize/deserialize
-    size_t num_members_ = 10;
+    size_t num_members_ = 12;
     auto member_tuple() {
-        return std::tie(error_bit_word_, last_command_, last_command_status_, daq_bit_word_, tpc_disk_,
-                        tof_disk_, sys_disk_, cpu_usage_, memory_usage_, disk_temp_);
+        return std::tie(error_bit_word_, last_command_, last_command_status_, daq_bit_word_, tpc_disk_0_,
+                        tof_disk_0_, tpc_disk_1_, tof_disk_1_,  sys_disk_, cpu_usage_, memory_usage_, disk_temp_);
     };
     auto member_tuple() const {
-        return std::tie(error_bit_word_, last_command_, last_command_status_, daq_bit_word_, tpc_disk_,
-                        tof_disk_, sys_disk_, cpu_usage_, memory_usage_, disk_temp_);
+        return std::tie(error_bit_word_, last_command_, last_command_status_, daq_bit_word_, tpc_disk_0_,
+                        tof_disk_0_, tpc_disk_1_, tof_disk_1_, sys_disk_, cpu_usage_, memory_usage_, disk_temp_);
     };
 
 public:
@@ -71,8 +73,10 @@ public:
     // Public setters for populating data
     void setLastCommand(uint32_t last_command) { last_command_ = last_command; }
     void setLastCommandStatus(uint32_t last_command_status) { last_command_status_ = last_command_status; }
-    void setTpcDisk(uint32_t disk) { tpc_disk_ = disk; }
-    void setTofDisk(uint32_t disk) { tof_disk_ = disk; }
+    void setTpcDisk0(uint32_t disk) { tpc_disk_0_ = disk; }
+    void setTofDisk0(uint32_t disk) { tof_disk_0_ = disk; }
+    void setTpcDisk1(uint32_t disk) { tpc_disk_1_ = disk; }
+    void setTofDisk1(uint32_t disk) { tof_disk_1_ = disk; }
     void setSysDisk(uint32_t disk) { sys_disk_ = disk; }
     void setCpuUsage(uint32_t usage) { cpu_usage_ = usage; }
     void setMemoryUsage(uint32_t usage) { memory_usage_ = usage; }
@@ -90,8 +94,10 @@ public:
     uint32_t getLastCommand() const { return last_command_; }
     uint32_t getLastCommandStatus() const { return last_command_status_; }
     uint32_t getFullDaqBitWord() const { return daq_bit_word_; }
-    uint32_t getTpcDisk() const { return tpc_disk_; }
-    uint32_t getTofDisk() const { return tof_disk_; }
+    uint32_t getTpcDisk0() const { return tpc_disk_0_; }
+    uint32_t getTofDisk0() const { return tof_disk_0_; }
+    uint32_t getTpcDisk1() const { return tpc_disk_1_; }
+    uint32_t getTofDisk1() const { return tof_disk_1_; }
     uint32_t getSysDisk() const { return sys_disk_; }
     uint32_t getCpuUsage() const { return cpu_usage_; }
     uint32_t getMemoryUsage() const { return memory_usage_; }
