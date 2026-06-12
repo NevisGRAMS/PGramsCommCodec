@@ -166,8 +166,10 @@ PYBIND11_MODULE(datamon, m) {
         .def("serialize", &DaqCompMonitor::serialize)
 
         .def_property_readonly("daq_bit_word", &DaqCompMonitor::getFullDaqBitWord)
-        .def_property_readonly("tpc_disk", &DaqCompMonitor::getTpcDisk)
-        .def_property_readonly("tof_disk", &DaqCompMonitor::getTofDisk)
+        .def_property_readonly("tpc_disk0", &DaqCompMonitor::getTpcDisk0)
+        .def_property_readonly("tof_disk0", &DaqCompMonitor::getTofDisk0)
+        .def_property_readonly("tpc_disk1", &DaqCompMonitor::getTpcDisk1)
+        .def_property_readonly("tof_disk1", &DaqCompMonitor::getTofDisk1)
         .def_property_readonly("sys_disk", &DaqCompMonitor::getSysDisk)
         .def_property_readonly("cpu_usage", &DaqCompMonitor::getCpuUsage)
         .def_property_readonly("memory_usage", &DaqCompMonitor::getMemoryUsage)
